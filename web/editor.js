@@ -10,6 +10,15 @@ document.head.appendChild(link);
 var script = document.createElement("script");
 script.src = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.5/ace.js";
 script.type = "text/javascript";
+var Currentfilename;
+var CurFile = document.createElement("span");
+ 
+function updatecurrentfilenme(filename) {
+  Currentfilename = filename;
+  CurFile.innerHTML = "  " + Currentfilename;
+}
+
+updatecurrentfilenme("/index.htm");
 document.head.appendChild(script);
 function createFileUploader(element, tree, editor) {
   var xmlHttp;
@@ -34,6 +43,12 @@ function createFileUploader(element, tree, editor) {
   mkfile.innerHTML = 'MkFile';
   document.getElementById(element).appendChild(mkfile);
 
+  var refrshfile = document.createElement("button");
+  refrshfile.innerHTML = '<span STYLE="font-size:8.5pt">&#128472</span><span STYLE="font-size:10pt"> File</span>';
+  refrshfile.style.fontSize = "11px";
+  document.getElementById(element).appendChild(refrshfile);  
+  document.getElementById(element).appendChild(CurFile);
+
   function httpPostProcessRequest() {
     if (xmlHttp.readyState == 4) {
       if (xmlHttp.status != 200) alert("ERROR[" + xmlHttp.status + "]: " + xmlHttp.responseText);
@@ -51,11 +66,17 @@ function createFileUploader(element, tree, editor) {
     xmlHttp.send(formData);
   }
 
+  refrshfile.onclick = function (e) {
+    editor.loadUrl(Currentfilename);
+  }
+
   mkfile.onclick = function (e) {
     if (path.value.indexOf(".") === -1) return;
     createPath(path.value);
     editor.loadUrl(path.value);
+    updatecurrentfilenme(path.value);
   };
+
   mkdir.onclick = function (e) {
     if (path.value.length < 2) return;
     var dir = path.value
@@ -95,6 +116,7 @@ function createFileUploader(element, tree, editor) {
     } else {
       path.value = path.value.substring(0, path.value.lastIndexOf("/") + 1) + filename;
     }
+    updatecurrentfilenme( path.value);
   }
 }
 
@@ -236,6 +258,7 @@ function createTree(element, editor) {
       } else if (isImageFile(leaf.id)) {
         loadPreview(leaf.id);
       }
+      updatecurrentfilenme( leaf.id);
     };
     leaf.oncontextmenu = function (e) {
       e.preventDefault();
