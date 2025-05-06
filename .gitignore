@@ -39,6 +39,7 @@ Thumbs.db
 *.exe
 *.out
 *.app
+*.bin
 
 # Vim backups
 *.swp
