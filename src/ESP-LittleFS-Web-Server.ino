@@ -44,9 +44,9 @@
 #include <FS.h>
 #endif
 
-#define debug_print // manages most of the print and println debug, not all but most
+#define DEBUG_PRINT  // manages most of the print and println debug, not all but most
 
-#if defined debug_print
+#ifdef DEBUG_PRINT
 #define debug_begin(x) Serial.begin(x)
 #define debug(x) Serial.print(x)
 #define debugln(x) Serial.println(x)
@@ -57,6 +57,7 @@
 #define debugln(x)
 #define setdebug(x)
 #endif
+
 
 #if defined(ESP8266)
 #warning "ESP8266 Pins You can not change them"
@@ -83,22 +84,45 @@ const char *host = "ESP-LittleFS-S3";
 #endif
 
 #if defined(ESP8266)
-#define PIN_BOOT 0
+#ifndef PIN_BOOT
+  #define PIN_BOOT 0
+#endif
 #elif defined(CONFIG_IDF_TARGET_ESP32)
-#define PIN_BOOT 0
+#ifndef PIN_BOOT
+  #define PIN_BOOT 0
+#endif
 #elif defined(CONFIG_IDF_TARGET_ESP32C3)
-#define PIN_BOOT 9
+#ifndef PIN_BOOT
+  #define PIN_BOOT 9
+#endif
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN 8
+#endif
 #elif defined(CONFIG_IDF_TARGET_ESP32C6)
-#define PIN_BOOT 9
+#ifndef PIN_BOOT
+  #define PIN_BOOT 9
+#endif
 #elif defined(CONFIG_IDF_TARGET_ESP32S2)
-#define PIN_BOOT 0
+#ifndef PIN_BOOT
+  #define PIN_BOOT 0
+#endif
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 15
+#endif
 #elif defined(CONFIG_IDF_TARGET_ESP32S3)
-#define PIN_BOOT 0
+#ifndef PIN_BOOT
+  #define PIN_BOOT 0
+#endif
 #if not defined(PIN_NEOPIXEL)
 #define PIN_NEOPIXEL 48
 #endif
 #endif
+
+#ifdef LED_BUILTIN
 #define PIN_LED LED_BUILTIN
+#else
+#define PIN_LED -1
+#endif
 
 #if defined(ESP8266)
 ESP8266WebServer server(80);
@@ -410,7 +434,6 @@ const char Index_html[] PROGMEM = R"rawliteral(<!DOCTYPE html>
   <head>
     <title>LittleFS Editor</title>
     <script src="https://emilespecialproducts.github.io/ESP-LittleFS-Web-Server/editor.js" type="text/javascript"></script> 
-
   </head>
   <body onload="onBodyLoad();">
     <div id="uploader"></div>
@@ -604,9 +627,6 @@ void setup(void)
   message += " Total PSRAM: " + String(ESP.getPsramSize() / 1024);
   message += " Free PSRAM: " + String(ESP.getFreePsram() / 1024);
   message += " Temperature: " + String(temperatureRead()) + " °C "; // internal TemperatureSensor
-#if defined(CONFIG_IDF_TARGET_ESP32)
-  message += " HallSensor: " + String(hallRead());
-#endif
 #else
   message += " FlashChipId: " + String(ESP.getFlashChipId());
   message += " FlashChipRealSize: " + String(ESP.getFlashChipRealSize());
