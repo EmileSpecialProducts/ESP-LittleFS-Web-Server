@@ -3,12 +3,26 @@
     <img alt="BuymeaCoffee" src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png">
   </a>
 </p>
+
 # ESP-LittleFS-Web-Server
+This is a Web server that has a Wifi Manager, OTA (Over-The-Air) support, And a full text editor, it will also log the resets.
 
-This is the ESP-LittleFS-Web-Server example for esp-arduino 8266/ESP32/S2/S3/C3/C6.
 
-For the ESP32-C6 you will need the Arduino Release v3.0.7. but release 3.0.7 will not work well on the ESP32-S3 and ESP32-C6
-See the open issue for fix in 3.0.7
+This is the ESP-LittleFS-Web-Server example for esp-arduino 8266-12E/ESP32/S2/S3/C3/C6.
+This will use the Arduino Release v3.2.0 in PlatformIO so that it will support the ESP32-C6.
+
+You can Program a Device using the [ESP Web Tools on this page](https://emilespecialproducts.github.io/ESP-LittleFS-Web-Server/upload.html). 
+
+After programming you will need to setup the Wifi connection this is done by connection to the ESP Access Point (ESP-xxxxxxx)
+And set up your Wifi.
+And then you can access the ESP on the folowing links ( or IP address )
+
+[ESP-LittleFS-12E.local](http://ESP-LittleFS-12E.local)<br>
+[ESP-LittleFS-ESP.local](http://ESP-LittleFS-ESP.local)<br>
+[ESP-LittleFS-C3.local](http://ESP-LittleFS-C3.local)<br>
+[ESP-LittleFS-C3.local](http://ESP-LittleFS-C6.local)<br>
+[ESP-LittleFS-C3.local](http://ESP-LittleFS-S2.local)<br>
+[ESP-LittleFS-C3.local](http://ESP-LittleFS-S3.local)<br>
 
 You can find a link the to Youtube https://youtu.be/SGOuzqJMnVM for the SPIFFS version
 
