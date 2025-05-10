@@ -47,21 +47,19 @@
 #define DEBUG_PRINT  // manages most of the print and println debug, not all but most
 
 #ifdef DEBUG_PRINT
-#define debug_begin(x) Serial.begin(x)
-#define debug(x) Serial.print(x)
-#define debugln(x) Serial.println(x)
-#define setdebug(x) Serial.setDebugOutput(x)
+#define debug_begin(...) Serial.begin(__VA_ARGS__)
+#define debug(...) Serial.print(__VA_ARGS__)
+#define debugln(...) Serial.println(__VA_ARGS__)
+#define setdebug(...) Serial.setDebugOutput(__VA_ARGS__)
+#define debugf(...) Serial.printf(__VA_ARGS__)
 #else
-#define debug_begin(x)
-#define debug(x)
-#define debugln(x)
-#define setdebug(x)
+
+#define debug_begin(...)
+#define debug(...)
+#define debugln(...)
+#define setdebug(...)
 #endif
 
-
-#if defined(ESP8266)
-#warning "ESP8266 Pins You can not change them"
-#endif
 
 #define USEWIFIMANAGER
 #ifndef USEWIFIMANAGER
@@ -73,6 +71,8 @@ const char *password = "Password_Router";
 const char *host = "ESP-LittleFS-12E";
 #elif defined(CONFIG_IDF_TARGET_ESP32)
 const char *host = "ESP-LittleFS-ESP";
+#elif defined(CONFIG_IDF_TARGET_ESP32C2)
+const char *host = "ESP-LittleFS-C2";
 #elif defined(CONFIG_IDF_TARGET_ESP32C3)
 const char *host = "ESP-LittleFS-C3";
 #elif defined(CONFIG_IDF_TARGET_ESP32C6)
@@ -90,6 +90,13 @@ const char *host = "ESP-LittleFS-S3";
 #elif defined(CONFIG_IDF_TARGET_ESP32)
 #ifndef PIN_BOOT
   #define PIN_BOOT 0
+#endif
+#elif defined(CONFIG_IDF_TARGET_ESP32C2)
+#ifndef PIN_BOOT
+  #define PIN_BOOT 9
+#endif
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN 8
 #endif
 #elif defined(CONFIG_IDF_TARGET_ESP32C3)
 #ifndef PIN_BOOT
@@ -158,7 +165,7 @@ bool loadFromLittleFS(String path)
   String dataType = "text/plain";
   debugln(" GetFile " + path);
   if (path.endsWith("/"))
-    path += "index.htm";
+    path += "index.html";
 
   if (path.endsWith(".src"))
     path = path.substring(0, path.lastIndexOf("."));
@@ -597,8 +604,14 @@ void setup(void)
   }
 
   server.on("/", HTTP_GET, []()
-            { server.sendHeader("Access-Control-Allow-Origin", "*");
-              server.send_P(200, "text/html", Index_html, sizeof(Index_html)-1); });
+            { 
+              if (!loadFromLittleFS("/"))
+              {
+                server.sendHeader("Access-Control-Allow-Origin", "*");
+                server.send_P(200, "text/html", Index_html, sizeof(Index_html)-1); 
+              }
+            });
+
   server.on("/list", HTTP_GET, printDirectory);
   server.on("/edit", HTTP_DELETE, handleDelete);
   server.on("/edit", HTTP_PUT, handleCreate);
