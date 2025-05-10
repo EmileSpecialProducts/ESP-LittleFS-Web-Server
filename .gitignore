@@ -4,8 +4,12 @@
 .piolibdeps
 .clang_complete
 .gcc-flags.json
-
+.dummy
+managed_components
 Thumbs.db
+sdkconfig.*
+CMakeLists.txt
+dependencies.lock
 
 # Prerequisites
 *.d
