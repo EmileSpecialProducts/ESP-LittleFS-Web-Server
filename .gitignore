@@ -10,6 +10,8 @@ Thumbs.db
 sdkconfig.*
 CMakeLists.txt
 dependencies.lock
+build.txt
+build_upload.txt
 
 # Prerequisites
 *.d
